@@ -13,7 +13,8 @@ req.headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.
 
 def dicebot(item):
     #sender = item.fetchPreviousSiblings()[0]
-    #text = item.text.replace('#r ','',1)
+    #sender = sender.text
+    #item = item.text
     command = ''
     reply = ''
 
@@ -50,7 +51,7 @@ def dicebot(item):
         reply = '* ' + sender + ' 投掷 ' + hint + ': ' + command[:-1] + ' =' + reply; 
     
     #send(reply)
-    #print('收到命令：',text,'已回复:',reply)
+    #print('收到命令：',item,'已回复:',reply)
     
     print(reply)
 

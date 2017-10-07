@@ -18,15 +18,80 @@ target = '#'
 
 #以下是命令调用函数
 
-#普通的骰子
-def dicebot(item):
+#coc
+def cocbot(item):
     sender = item.fetchPreviousSiblings()[0]
+    sender = sender.text
+    item = item.text
+
+    command = ''
+    reply = ''
+
+    #sender = '没有'
+    pattern = re.compile(r'#coc\s?([0-9]*)')
+    match = pattern.match(item)
+    #print(match.groups())
+    coms = [(3,6,0),(3,6,0),(3,6,0),(3,6,0),(3,6,0),(2,6,6),(2,6,6),(3,6,3),(1,10,0)]
+    prop = ['力量 ',' 体质 ',' 意志 ',' 敏捷 ',' 外貌 ' ,' 智力 ',' 体型 ',' 教育 ',' 资产 ']
+    if not match:
+        reply = '命令格式错误' 
+    else:
+        x = (match.group(1) == '' and 1) or int(match.group(1))
+        if (x < 1 or x > 10):
+            reply = '参数错误'
+        else:
+            for k in range(x):
+                for i in range(9):
+                    (x,y,z) = coms[i]
+                    reply += prop[i]
+                    val = z
+                    for j in range(x):
+                        val += random.randint(1,y)
+                    reply += str(val)
+                reply += '\\n'
+            command = '1'
+
+    if command != '':
+        reply = '* ' + sender + ' 投掷coc 6版 属性 :\\n' + reply; 
+    
+    send(reply)
+    print('收到命令：',item,'已回复:',reply)
+
+#jrrp
+def jrrpbot(item):
+    sender = item.fetchPreviousSiblings()[0]
+    sender = sender.text
     item = item.text
     
     command = ''
     reply = ''
 
-    sender = '没有'
+    #sender = '没有'
+    pattern = re.compile(r'#jrrp')
+    match = pattern.match(item)
+    if not match:
+        reply = '命令格式错误' 
+    else:
+        x = random.randint(1,100)
+        reply = str(x) + '% !\\n' + '|' * x
+        command = '1'
+
+    if command != '':
+        reply = '* ' + sender + ' 今天的运势指数是 ' + reply; 
+    
+    send(reply)
+    print('收到命令：',item,'已回复:',reply)
+
+#普通的骰子
+def dicebot(item):
+    sender = item.fetchPreviousSiblings()[0]
+    sender = sender.text
+    item = item.text
+    
+    command = ''
+    reply = ''
+
+    #sender = '没有'
     pattern = re.compile(r'#r\s*(([0-9]*)d([0-9]*)\+?)+\s*(?P<hint>\S*)')
     match = pattern.match(item)
     if not match:
@@ -39,7 +104,6 @@ def dicebot(item):
         comsum = 0
         
         for com in coms:
-            print(com)
             x = (com[1] == '' and 1) or int(com[1])
             y = (com[2] == '' and 100) or int(com[2])
             if (x < 1 or x > 100 or y < 1 or y > 10000):
@@ -62,8 +126,8 @@ def dicebot(item):
     print('收到命令：',item,'已回复:',reply)
 
 #命令列表,函数放在包中
-targetDic = {"r":dicebot}
-#"jrrp":fatebot,"coc":cocbot
+targetDic = {"r":dicebot,"jrrp":jrrpbot,"coc":cocbot}
+#
 
 #发送信息
 def send(text):
